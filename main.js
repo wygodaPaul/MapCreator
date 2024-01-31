@@ -33,4 +33,10 @@ for (let x = 0; x<9; x++) {
 
 console.log('arrayMap - ', arrayMap)
 
+
+// Random tile picker
+
+const getRandomNumber = (max) => {
+    return Math.floor(Math.random() * max)
+}
 console.log('END')
