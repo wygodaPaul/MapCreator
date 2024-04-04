@@ -16,5 +16,8 @@
     "url": "https://github.com/wygodaPaul/MapCreator/issues"
   },
   "homepage": "https://github.com/wygodaPaul/MapCreator#readme",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "three": "^0.163.0"
+  }
 }
