@@ -1,0 +1,20 @@
+{
+  "name": "mapcreator",
+  "version": "1.0.0",
+  "description": "A program for map creation using wave-collapse-algorithm",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wygodaPaul/MapCreator.git"
+  },
+  "author": "Paweł Wygoda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wygodaPaul/MapCreator/issues"
+  },
+  "homepage": "https://github.com/wygodaPaul/MapCreator#readme",
+  "type": "module"
+}
