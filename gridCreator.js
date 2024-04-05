@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 export const gridCreator = (grid) => {
-let map = []
+let worldMap = []
 let arrayOfPlanes = []
 
 for (let i = 0; i < grid; i++) {
@@ -17,13 +17,13 @@ for (let i = 0; i < grid; i++) {
             isCollapsed: false,
             option: [0, 1, 2]
         }
-        map.push(cell)
+        worldMap.push(cell)
         arrayOfPlanes.push(plane)
     }
 }
 
 
-console.log(arrayOfPlanes)
-return  arrayOfPlanes 
+// console.log(arrayOfPlanes)
+return { worldMap, arrayOfPlanes } 
 }
 
