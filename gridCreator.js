@@ -11,6 +11,8 @@ for (let i = 0; i < grid; i++) {
         plane.position.x = 10 * i
         plane.position.y = 0
         plane.position.z = 10 * j
+        plane.row = i
+        plane.column = j
         let cell = {
             row : i,
             column : j,
