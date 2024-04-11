@@ -25,17 +25,31 @@ for (let i = 0; i< arrayOfPlanes.length; i++) {
 }
 
 const options = [
-    { tile: 'land', number: 0, color: "green"  },
-    { tile: 'coast', number: 1, color: "yellow"  },
-    { tile: 'sea', number: 2, color: "blue"  }
+    { tile: 'land', tile_ID: 0, color: "green", rules: {top: [0], right: [0, 1], bottom: [0, 1], left: [0]}},
+    { tile: 'coast', tile_ID: 1, color: "yellow", rules: {top: [0, 1], right: [1, 2], bottom: [1, 2], left: [0, 1]}  },
+    { tile: 'sea', tile_ID: 2, color: "blue", rules: {top: [1, 2], right: [2], bottom: [2], left: [1, 2]}  }
 ]
     let digit = getRandomNumber(worldMap.length)
     worldMap[digit].option = [getRandomNumber(3)]
     worldMap[digit].isCollapsed = true
+
+	digit = getRandomNumber(worldMap.length)
+    worldMap[digit].option = [getRandomNumber(3)]
+    worldMap[digit].isCollapsed = true
+
+//Find lowest entropy
+const findLowest = () => {
+	let tempArray = worldMap.sort((a, b) => a.option.length - b.option.length)
+	let myArray = tempArray.filter(x => tempArray[0].option.length === x.option.length)
+	console.log("hello - ", myArray)
+
+	let randomCell = myArray[getRandomNumber(myArray.length)]
+	console.log("randomCell - ", randomCell)
+	// pickRANDOM
+}
+
+findLowest()
 // const pickRandom = () => {
-
-
-
 // 	let planeMaterial = new THREE.MeshBasicMaterial({color: options[worldMap[digit].option].color})
 // 	let planeGeometry = new THREE.BoxGeometry( 8.9, 1, 8.9 )
 // 	let plane = new THREE.Mesh( planeGeometry, planeMaterial )
