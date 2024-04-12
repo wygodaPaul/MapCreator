@@ -24,7 +24,7 @@ for (let i = 0; i< arrayOfPlanes.length; i++) {
     scene.add( arrayOfPlanes[i] )
 }
 
-const options = [
+const tileOptions = [
     { tile: 'land', tile_ID: 0, color: "green", rules: {top: [0], right: [0, 1], bottom: [0, 1], left: [0]}},
     { tile: 'coast', tile_ID: 1, color: "yellow", rules: {top: [0, 1], right: [1, 2], bottom: [1, 2], left: [0, 1]}  },
     { tile: 'sea', tile_ID: 2, color: "blue", rules: {top: [1, 2], right: [2], bottom: [2], left: [1, 2]}  }
@@ -53,44 +53,149 @@ const test = () => {
 	console.log('otherCell - ', worldMap[1 + 1 * grid])
 
 }
-
-test()
+// middle
+worldMap[1 + 1 * grid].option = [0]
+// above middle
+worldMap[1 + 0 * grid].option = [0, 1, 2]
+let currentCell =  worldMap[1 + 1 * grid]
+console.log('currentCell - ', worldMap[1 + 1 * grid])
+// test()
 
 //Find lowest entropy
 const findLowest = () => {
-	let tempArray = worldMap.sort((a, b) => a.option.length - b.option.length)
+	let tempArray = Array.from(worldMap)
+	tempArray.sort((a, b) => a.option.length - b.option.length)
 	let myArray = tempArray.filter(x => tempArray[0].option.length === x.option.length)
 	let randomCell = myArray[getRandomNumber(myArray.length)]
-	console.log("randomCell - ", randomCell)
+	// console.log("randomCell - ", randomCell)
 	return randomCell
 }
 
 findLowest()
 
 const checkNeighbors = (currentCell) => {
-	let allPossibleOptions = [0, 1, 2]
-	let otherCellAvaliableOptions
+	let otherCellPossibleOptions
+	let newTileOptions = []
+	let tempArr = []
+
 	// Check Top
-	if (currentCell.row > 0) {
-		otherCellAvaliableOptions = worldMap[currentCell.column + (currentCell.row - 1) * grid]
+	if (currentCell.row > 0 || !worldMap[currentCell.column + (currentCell.row - 1) * grid].isCollapsed) {
+		console.log("CHECK TOP")
+		// add all posible options depending on tiles available
+		for (let i = 0; i < currentCell.option.length; i++) {
+			tempArr.push(tileOptions[currentCell.option[i]].rules.top)
+		}
+		// flaten array and discard duplicates
+		otherCellPossibleOptions = [...new Set(tempArr.flat(Infinity))]
+		// Match possible options with options availalbe for top and sort them
+		let newArr = worldMap[currentCell.column + (currentCell.row - 1) * grid].option.concat(otherCellPossibleOptions).sort()
+		// check which options repeat
+		for (let i = 0; i < newArr.length - 1; i++) {
+			if (newArr[i] === newArr[i+1]) {
+				newTileOptions.push(newArr[i])
+			}
+		}
+		// discard duplicates
+		newTileOptions = [...new Set(newTileOptions)]
+		// assaign new options for top tile
+		worldMap[currentCell.column + (currentCell.row - 1) * grid].option = newTileOptions
+		// clear array's
+		newTileOptions = []
+		tempArr = []
 	}
 
 	// Check Right
-	if (currentCell.column < grid - 1) {
-		otherCellAvaliableOptions = worldMap[(currentCell.column + 1) + currentCell.row * grid]
+	if (currentCell.column < grid - 1 || !worldMap[(currentCell.column + 1) + currentCell.row * grid].isCollapsed) {
+		console.log("CHECK RIGHT")
+		// add all posible options depending on tiles available
+		for (let i = 0; i < currentCell.option.length; i++) {
+			tempArr.push(tileOptions[currentCell.option[i]].rules.right)
+		}
+		// flaten array and discard duplicates
+		otherCellPossibleOptions = [...new Set(tempArr.flat(Infinity))]
+		// Match possible options with options availalbe for right and sort them
+		let newArr = worldMap[(currentCell.column + 1) + currentCell.row * grid].option.concat(otherCellPossibleOptions).sort()
+		// check which options repeat
+		for (let i = 0; i < newArr.length - 1; i++) {
+			if (newArr[i] === newArr[i+1]) {
+				newTileOptions.push(newArr[i])
+			}
+		}
+		// discard duplicates
+		newTileOptions = [...new Set(newTileOptions)]
+		// assaign new options for right tile
+		worldMap[(currentCell.column + 1) + currentCell.row * grid].option = newTileOptions
+		// clear array's
+		newTileOptions = []
+		tempArr = []
 	}
 
 	// Check Bottom
-	if (currentCell.row < grid - 1) {
-		otherCellAvaliableOptions = worldMap[currentCell.column + (currentCell.row + 1) * grid]
+	if (currentCell.row < grid - 1 || !worldMap[currentCell.column + (currentCell.row + 1) * grid].isCollapsed) {
+		console.log("CHECK BOTTOM")
+		// add all posible options depending on tiles available
+		for (let i = 0; i < currentCell.option.length; i++) {
+			tempArr.push(tileOptions[currentCell.option[i]].rules.bottom)
+		}
+		// flaten array and discard duplicates
+		otherCellPossibleOptions = [...new Set(tempArr.flat(Infinity))]
+		// Match possible options with options availalbe for bottom and sort them
+		let newArr = worldMap[currentCell.column + (currentCell.row + 1) * grid].option.concat(otherCellPossibleOptions).sort()
+		// check which options repeat
+		for (let i = 0; i < newArr.length - 1; i++) {
+			if (newArr[i] === newArr[i+1]) {
+				newTileOptions.push(newArr[i])
+			}
+		}
+		// discard duplicates
+		newTileOptions = [...new Set(newTileOptions)]
+		// assaign new options for bottom tile
+		worldMap[currentCell.column + (currentCell.row + 1) * grid].option = newTileOptions
+		// clear array's
+		newTileOptions = []
+		tempArr = []
 
 	}
 
 	// Check Left
-	if (currentCell.column > 0) {
-		otherCellAvaliableOptions = worldMap[(currentCell.column - 1) + currentCell.row * grid]
+	if (currentCell.column > 0 || !worldMap[(currentCell.column - 1) + currentCell.row * grid].isCollapsed) {
+		console.log("CHECK LEFT")
+		// add all posible options depending on tiles available
+		for (let i = 0; i < currentCell.option.length; i++) {
+			tempArr.push(tileOptions[currentCell.option[i]].rules.left)
+		}
+		// flaten array and discard duplicates
+		otherCellPossibleOptions = [...new Set(tempArr.flat(Infinity))]
+		// Match possible options with options availalbe for left and sort them
+		let newArr = worldMap[(currentCell.column - 1) + currentCell.row * grid].option.concat(otherCellPossibleOptions).sort()
+		// check which options repeat
+		for (let i = 0; i < newArr.length - 1; i++) {
+			if (newArr[i] === newArr[i+1]) {
+				newTileOptions.push(newArr[i])
+			}
+		}
+		// discard duplicates
+		newTileOptions = [...new Set(newTileOptions)]
+		// assaign new options for left tile
+		worldMap[(currentCell.column - 1) + currentCell.row * grid].option = newTileOptions
+		// clear array's
+		newTileOptions = []
+		tempArr = []
 
 	}
+}
+
+checkNeighbors(currentCell)
+
+console.log("worldMap - ",worldMap)
+const checkValidation = (x, availableChoices, direction) => {
+	// let nyArr = []
+	// const result = [...new Set([...firstArr, ...secondArr])]
+
+	// for (let i = 0; i<x.option.length; i++) {
+	// 	myArray.push(tileOptions[x.option[i]].rules.top)
+	// }
+	// x.option
 }
 
 
@@ -99,7 +204,7 @@ const draw = () => {
 		for(let column = 0; column < grid; column++) {
 			let cell = worldMap[column + row * grid]
 			if(cell.isCollapsed) {
-				let planeMaterial = new THREE.MeshBasicMaterial({color: options[cell.option[0]].color})
+				let planeMaterial = new THREE.MeshBasicMaterial({color: tileOptions[cell.option[0]].color})
 				let planeGeometry = new THREE.BoxGeometry( 8.9, 1, 8.9 )
 				let plane = new THREE.Mesh( planeGeometry, planeMaterial )
 				plane.position.x = 10 * worldMap[column + row * grid].row
@@ -136,7 +241,6 @@ setTimeout( () => {
 },1000)
 
 
-console.log("PING")
 
 
 
