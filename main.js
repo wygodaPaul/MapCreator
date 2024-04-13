@@ -3,9 +3,9 @@ import * as THREE from 'three';
 import { gridCreator } from "./gridCreator.js"
 import { getRandomNumber } from "./optionFunctions.js"
 
-const grid = 3
+const grid = 4
 const numberOfoptions = 3
-let { worldMap, arrayOfPlanes } = gridCreator(grid)
+const { worldMap, arrayOfPlanes } = gridCreator(grid)
 
 const scene = new THREE.Scene();
 // Camera Options
@@ -26,7 +26,7 @@ for (let i = 0; i< arrayOfPlanes.length; i++) {
 
 const tileOptions = [
     { tile: 'land', tile_ID: 0, color: "green", rules: {top: [0], right: [0, 1], bottom: [0, 1], left: [0]}},
-    { tile: 'coast', tile_ID: 1, color: "yellow", rules: {top: [0, 1], right: [1, 2], bottom: [1, 2], left: [0, 1]}  },
+    { tile: 'coast', tile_ID: 1, color: "yellow", rules: {top: [0], right: [ 2], bottom: [ 2], left: [0]}  },
     { tile: 'sea', tile_ID: 2, color: "blue", rules: {top: [1, 2], right: [2], bottom: [2], left: [1, 2]}  }
 ]
     // let digit = getRandomNumber(worldMap.length)
@@ -47,39 +47,44 @@ const tileOptions = [
 	// 	scene.add( plane )
 	// }
 
-const test = () => {
-	console.log('currentCell - ', worldMap[0 + 1 * grid])
+// const test = () => {
+// 	console.log('currentCell - ', worldMap[0 + 1 * grid])
 
-	console.log('otherCell - ', worldMap[1 + 1 * grid])
+// 	console.log('otherCell - ', worldMap[1 + 1 * grid])
 
-}
-// middle
-worldMap[1 + 1 * grid].option = [0]
-// above middle
-worldMap[1 + 0 * grid].option = [0, 1, 2]
-let currentCell =  worldMap[1 + 1 * grid]
-console.log('currentCell - ', worldMap[1 + 1 * grid])
-// test()
+// }
+// // middle
+// worldMap[1 + 1 * grid].option = [0]
+// // above middle
+// worldMap[1 + 0 * grid].option = [0, 1, 2]
+// let currentCell =  worldMap[1 + 1 * grid]
+/// test()
 
 //Find lowest entropy
-const findLowest = () => {
-	let tempArray = Array.from(worldMap)
-	tempArray.sort((a, b) => a.option.length - b.option.length)
+const findLowest = async (worldMap) => {
+	// console.log("worldmap - ", worldMap)
+	let tempArray = worldMap.slice(0)
+	// console.log('tempArr1 - ', tempArray)
+	tempArray.filter(x => x.isCollapsed === false).sort((a, b) => a.option.length - b.option.length)
+	// console.log('tempArr2 - ', tempArray)
 	let myArray = tempArray.filter(x => tempArray[0].option.length === x.option.length)
+	// console.log('tempArr3 - ', myArray)
 	let randomCell = myArray[getRandomNumber(myArray.length)]
 	// console.log("randomCell - ", randomCell)
 	return randomCell
 }
 
-findLowest()
-
-const checkNeighbors = (currentCell) => {
+const checkNeighbors = async (currentCell) => {
 	let otherCellPossibleOptions
 	let newTileOptions = []
 	let tempArr = []
 
+	if (currentCell.isCollapsed) return
+
+	console.log("TEST", currentCell)
+	await new Promise(resolve => setTimeout(resolve, 100))
 	// Check Top
-	if (currentCell.row > 0 || !worldMap[currentCell.column + (currentCell.row - 1) * grid].isCollapsed) {
+	if (currentCell.row > 0 && !worldMap[currentCell.column + (currentCell.row - 1) * grid].isCollapsed) {
 		console.log("CHECK TOP")
 		// add all posible options depending on tiles available
 		for (let i = 0; i < currentCell.option.length; i++) {
@@ -104,8 +109,9 @@ const checkNeighbors = (currentCell) => {
 		tempArr = []
 	}
 
+	await new Promise(resolve => setTimeout(resolve, 100))
 	// Check Right
-	if (currentCell.column < grid - 1 || !worldMap[(currentCell.column + 1) + currentCell.row * grid].isCollapsed) {
+	if (currentCell.column < grid - 1 && !worldMap[(currentCell.column + 1) + currentCell.row * grid].isCollapsed) {
 		console.log("CHECK RIGHT")
 		// add all posible options depending on tiles available
 		for (let i = 0; i < currentCell.option.length; i++) {
@@ -130,8 +136,9 @@ const checkNeighbors = (currentCell) => {
 		tempArr = []
 	}
 
+	await new Promise(resolve => setTimeout(resolve, 100))
 	// Check Bottom
-	if (currentCell.row < grid - 1 || !worldMap[currentCell.column + (currentCell.row + 1) * grid].isCollapsed) {
+	if (currentCell.row < grid - 1 && !worldMap[currentCell.column + (currentCell.row + 1) * grid].isCollapsed) {
 		console.log("CHECK BOTTOM")
 		// add all posible options depending on tiles available
 		for (let i = 0; i < currentCell.option.length; i++) {
@@ -157,8 +164,9 @@ const checkNeighbors = (currentCell) => {
 
 	}
 
+	await new Promise(resolve => setTimeout(resolve, 100))
 	// Check Left
-	if (currentCell.column > 0 || !worldMap[(currentCell.column - 1) + currentCell.row * grid].isCollapsed) {
+	if (currentCell.column > 0 && !worldMap[(currentCell.column - 1) + currentCell.row * grid].isCollapsed) {
 		console.log("CHECK LEFT")
 		// add all posible options depending on tiles available
 		for (let i = 0; i < currentCell.option.length; i++) {
@@ -185,42 +193,77 @@ const checkNeighbors = (currentCell) => {
 	}
 }
 
-checkNeighbors(currentCell)
+// checkNeighbors(currentCell)
 
-console.log("worldMap - ",worldMap)
-const checkValidation = (x, availableChoices, direction) => {
-	// let nyArr = []
-	// const result = [...new Set([...firstArr, ...secondArr])]
+// console.log("worldMap - ",worldMap)
 
-	// for (let i = 0; i<x.option.length; i++) {
-	// 	myArray.push(tileOptions[x.option[i]].rules.top)
-	// }
-	// x.option
+const drawNi = async () => {
+	console.log('WORLD MAP - ', worldMap)
+	for (let i = 0 ; i<worldMap.length; i++) {
+		if (worldMap[i].isCollapsed === false && worldMap[i].option.length === 1) {
+			let planeMaterial = new THREE.MeshBasicMaterial({color: tileOptions[worldMap[i].option[0]].color})
+			let planeGeometry = new THREE.BoxGeometry( 8.9, 1, 8.9 )
+			let plane = new THREE.Mesh( planeGeometry, planeMaterial )
+
+			plane.position.z = 10 * worldMap[i].row
+			plane.position.y = 1
+			plane.position.x = 10 * worldMap[i].column
+			worldMap[i].isCollapsed = true
+			scene.add( plane )
+			await new Promise(resolve => setTimeout(resolve, 1000))
+		}
+	}
 }
 
-
-const draw = () => {
-	for(let row = 0; row < grid; row++) {
-		for(let column = 0; column < grid; column++) {
+const draw = async () => {
+	for(let column = 0; column < grid; column++) {
+		for(let row = 0; row < grid; row++) {
 			let cell = worldMap[column + row * grid]
-			if(cell.isCollapsed) {
+			if(cell.isCollapsed === false && cell.option.length === 1) {
 				let planeMaterial = new THREE.MeshBasicMaterial({color: tileOptions[cell.option[0]].color})
 				let planeGeometry = new THREE.BoxGeometry( 8.9, 1, 8.9 )
 				let plane = new THREE.Mesh( planeGeometry, planeMaterial )
 				plane.position.x = 10 * worldMap[column + row * grid].row
 				plane.position.y = 1
 				plane.position.z = 10 * worldMap[column + row * grid].column
+				worldMap[column + row * grid].isCollapsed = true
 				scene.add( plane )
+				await new Promise(resolve => setTimeout(resolve, 1000))
 			} else {
-				let planeMaterial = new THREE.MeshBasicMaterial({color: "black"})
-				let planeGeometry = new THREE.BoxGeometry( 8.9, 1, 8.9 )
-				let plane = new THREE.Mesh( planeGeometry, planeMaterial )
-				plane.position.x = 10 * worldMap[column + row * grid].row
-				plane.position.y = 1
-				plane.position.z = 10 * worldMap[column + row * grid].column
-				scene.add( plane )
+				// let planeMaterial = new THREE.MeshBasicMaterial({color: "black"})
+				// let planeGeometry = new THREE.BoxGeometry( 8.9, 1, 8.9 )
+				// let plane = new THREE.Mesh( planeGeometry, planeMaterial )
+				// plane.position.x = 10 * worldMap[column + row * grid].row
+				// plane.position.y = 1
+				// plane.position.z = 10 * worldMap[column + row * grid].column
+				// scene.add( plane )
 			}
 		}
+	}
+}
+
+const loopMe = async () => {
+	// worldMap[1].option = [getRandomNumber(3)]
+	let counter = 0
+	while(counter < 1) {
+
+		for (let i = 0; i< grid*grid; i++) {
+			await checkNeighbors(worldMap[i])
+		}
+
+		// CHANGE!!!! FIND JUST ONE 
+		const temp = worldMap.filter(x => x.isCollapsed === false)
+		console.log('TEMP - ', temp)
+		if (temp.length === 0) break
+
+		let currentCell = await findLowest(temp)
+		worldMap[currentCell.column + currentCell.row * grid].option = [getRandomNumber(currentCell.option.length)]
+		console.log('currentCell - ', currentCell)
+		// console.log("worldMap - ", worldMap)
+		
+		await drawNi()
+		await new Promise(resolve => setTimeout(resolve, 3000))
+		counter++
 	}
 }
 
@@ -237,7 +280,7 @@ function animate() {
 animate();
 
 setTimeout( () => {
-	draw()
+	loopMe()
 },1000)
 
 
