@@ -4,15 +4,10 @@ import { gridCreator } from "./gridCreator.js"
 import { getRandomNumber } from "./functions/getRandomNumber.js"
 import { draw } from "./functions/draw.js"
 import { findCellWithLowestEntropy } from './functions/findLowestEntropy.js';
+import { tiles } from './tiles.js';
 
 const grid = 3
 let { mainGrid, arrayOfPlanes } = gridCreator(grid)
-
-const tiles = [
-    {ID: 0, TILE: 'Land', COLOR: 'green', RULES: {TOP: [0, 1], RIGHT: [0, 1], BOTTOM: [0, 1], LEFT: [0, 1]}},
-    {ID: 1, TILE: 'Coast', COLOR: 'yellow', RULES: {TOP: [0, 1, 2], RIGHT: [0, 1, 2], BOTTOM: [0, 1, 2], LEFT: [0, 1, 2]}},
-    {ID: 2, TILE: 'Sea', COLOR: 'blue', RULES: {TOP: [1, 2], RIGHT: [1, 2], BOTTOM: [1, 2], LEFT: [1, 2]}}
-]
 
 const scene = new THREE.Scene();
 // Camera Options
@@ -43,9 +38,25 @@ function animate() {
 
 animate();
 
-const cell = findCellWithLowestEntropy(mainGrid)
-console.log('Random cell - ', cell)
+const checkNeighbors = (cell) => {
+    console.log('THIS - ', cell)
 
-scene.add( draw() )
+    // CHECK TOP
+    if (cell.row > 0 && !mainGrid[cell.column + ( cell.row-1 ) * grid].isCollapsed) {
+        console.log('CHECKING TOP')
+        let topOptions = mainGrid[cell.column + ( cell.row-1 ) * grid]
+    }
+}
+
+// START
+const cell = findCellWithLowestEntropy(mainGrid)
+console.log('picked - ', cell)
+mainGrid[cell.column + cell.row * grid].option = [cell.option[getRandomNumber(cell.option.length)]]
+console.log('test - ', mainGrid)
+mainGrid[cell.column + cell.row * grid].isCollapsed = true
+scene.add( draw(mainGrid[cell.column + cell.row * grid]) )
+checkNeighbors(mainGrid[cell.column + cell.row * grid])
+
+
 // scene.children[4].material.color.b = 255
 // console.log(scene.children[4].material.color.b)
