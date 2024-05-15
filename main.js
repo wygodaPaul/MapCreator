@@ -7,32 +7,59 @@ import { draw } from "./functions/draw.js"
 import { findCellWithLowestEntropy } from './functions/findLowestEntropy.js';
 import { tiles } from './tiles.js';
 
-const grid = 5
+const grid = 15
 let { mainGrid, arrayOfPlanes } = gridCreator(grid)
 
 const scene = new THREE.Scene();
 // Camera Options
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-camera.position.x = grid*10/2-5;
-camera.position.y = -(grid*10/2-5)
-camera.position.z = grid*10;
-camera.lookAt( grid*10/2-5, -(grid*10/2-5), 0 )
+// camera.position.x = grid*10/2  
+// camera.position.y = -(grid*10/2) - 150
+// camera.position.z = grid*10 
+const helper = new THREE.CameraHelper( camera );
+scene.add( helper );
+
+const axesHelper = new THREE.AxesHelper( 250 );
+scene.add( axesHelper );
+
+const ambientLight = new THREE.AmbientLight(0x606060);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight( 0xffffff );
+directionalLight.position.x = -grid*10
+directionalLight.position.y = grid*10
+directionalLight.position.z = 200
+scene.add( directionalLight );
+
+camera.position.x = grid*10/2
+camera.position.y = -grid*10/2
+camera.position.z = grid*10
+
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-for (let i = 0; i< arrayOfPlanes.length; i++) {
-    // console.log(mainGrid[i])
-    scene.add( arrayOfPlanes[i] )
-}
-
+// let planeMaterial = new THREE.MeshBasicMaterial({color: "brown"})
+// let planeGeometry = new THREE.BoxGeometry( 10*grid, 10*grid, 1 )
+// let plane = new THREE.Mesh( planeGeometry, planeMaterial )
+// plane.position.x = grid*10/2-5
+// plane.position.y = -grid*10/2+5
+// plane.position.z = 0
+// scene.add(plane)
+// for (let i = 0; i< arrayOfPlanes.length; i++) {
+//     // console.log(mainGrid[i])
+//     scene.add( arrayOfPlanes[i] )
+// }
+let angle = 0
 function animate() {
 
 	requestAnimationFrame( animate );
-
-	// cube.rotation.x += 0.01;
-	// cube.rotation.y += 0.01;
+    angle += 0.005; 
+    // camera.position.x = grid*10/2 + Math.sin( angle ) * -200
+    // camera.position.y = -grid*10/2 - Math.cos( angle ) * 200
+    // camera.position.z = grid*10 
+    camera.lookAt( grid*10/2, -grid*10/2, 0 )
 
 	renderer.render( scene, camera );
 }
@@ -113,7 +140,7 @@ const loop = async () => {
         checkNeighbors(mainGrid[cell.column + cell.row * grid])
         count++
 
-        await new Promise(resolve => setTimeout(resolve, 50))
+        await new Promise(resolve => setTimeout(resolve, 10))
     }
 }
 
