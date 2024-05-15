@@ -2,11 +2,12 @@ import * as THREE from 'three';
 
 import { gridCreator } from "./gridCreator.js"
 import { getRandomNumber } from "./functions/getRandomNumber.js"
+import { getRandomOption } from './functions/getRandomOption.js';
 import { draw } from "./functions/draw.js"
 import { findCellWithLowestEntropy } from './functions/findLowestEntropy.js';
 import { tiles } from './tiles.js';
 
-const grid = 8
+const grid = 5
 let { mainGrid, arrayOfPlanes } = gridCreator(grid)
 
 const scene = new THREE.Scene();
@@ -22,7 +23,7 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 for (let i = 0; i< arrayOfPlanes.length; i++) {
-    console.log(mainGrid[i])
+    // console.log(mainGrid[i])
     scene.add( arrayOfPlanes[i] )
 }
 
@@ -41,7 +42,6 @@ animate();
 const checkNeighbors = (cell) => {
     // CHECK TOP
     if (cell.row > 0 && !mainGrid[cell.column + ( cell.row-1 ) * grid].isCollapsed) {
-        console.log('CHECKING TOP')
         let topOptions = mainGrid[cell.column + ( cell.row-1 ) * grid].option
         let thisCellTopOptions = tiles[cell.option[0]].RULES.TOP
         let mergedOptions = topOptions.concat(thisCellTopOptions).sort()
@@ -56,7 +56,6 @@ const checkNeighbors = (cell) => {
 
     // CHECK RIGHT
     if (cell.column < grid-1 && !mainGrid[( cell.column + 1 ) + cell.row * grid].isCollapsed) {
-        console.log('CHECKING RIGHT')
         let rightOptions = mainGrid[( cell.column + 1 ) + cell.row * grid].option
         let thisCellRightOptions = tiles[cell.option[0]].RULES.RIGHT
         let mergedOptions = rightOptions.concat(thisCellRightOptions).sort()
@@ -71,7 +70,6 @@ const checkNeighbors = (cell) => {
 
     // CHECK BOTTOM
     if (cell.row < grid-1 && !mainGrid[cell.column + ( cell.row+1 ) * grid].isCollapsed) {
-        console.log('CHECKING BOTTOM')
         let bottomOptions = mainGrid[cell.column + ( cell.row+1 ) * grid].option
         let thisCellBottomOptions = tiles[cell.option[0]].RULES.BOTTOM
         let mergedOptions = bottomOptions.concat(thisCellBottomOptions).sort()
@@ -86,7 +84,6 @@ const checkNeighbors = (cell) => {
 
     // CHECK LEFT
     if (cell.column > 0 && !mainGrid[( cell.column - 1 ) + cell.row * grid].isCollapsed) {
-        console.log('CHECKING LEFT')
         let leftOptions = mainGrid[( cell.column - 1 ) + cell.row * grid].option
         let thisCellLeftOptions = tiles[cell.option[0]].RULES.LEFT
         let mergedOptions = leftOptions.concat(thisCellLeftOptions).sort()
@@ -101,7 +98,7 @@ const checkNeighbors = (cell) => {
 }
 
 // START
-const loop = () => {
+const loop = async () => {
     let count = 0
     while (count < grid*grid) {
         let test = mainGrid.filter(x => x.isCollapsed === false)
@@ -109,16 +106,18 @@ const loop = () => {
 
         const cell = findCellWithLowestEntropy(mainGrid)
         // console.log('picked - ', cell)
-        mainGrid[cell.column + cell.row * grid].option = [cell.option[getRandomNumber(cell.option.length)]]
+        mainGrid[cell.column + cell.row * grid].option = [getRandomOption(cell.option)]
         // console.log('test - ', mainGrid)
         mainGrid[cell.column + cell.row * grid].isCollapsed = true
         scene.add( draw(mainGrid[cell.column + cell.row * grid]) )
         checkNeighbors(mainGrid[cell.column + cell.row * grid])
         count++
+
+        await new Promise(resolve => setTimeout(resolve, 50))
     }
 }
 
-loop()
+await loop()
 
 
 
