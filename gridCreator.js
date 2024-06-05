@@ -17,7 +17,7 @@ for (let i = 0; i < grid; i++) {
             row : i,
             column : j,
             isCollapsed: false,
-            option: [0, 1, 2],
+            option: [0, 1, 2, 3],
         }
         mainGrid.push(cell)
         arrayOfPlanes.push(plane)

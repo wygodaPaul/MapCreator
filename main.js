@@ -6,18 +6,24 @@ import { getRandomOption } from './functions/getRandomOption.js';
 import { draw } from "./functions/draw.js"
 import { findCellWithLowestEntropy } from './functions/findLowestEntropy.js';
 import { tiles } from './tiles.js';
+import { playGround } from './functions/playGround.js';
 
-const grid = 15
+const grid = 10
 let { mainGrid, arrayOfPlanes } = gridCreator(grid)
 
 const scene = new THREE.Scene();
 // Camera Options
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-// camera.position.x = grid*10/2  
-// camera.position.y = -(grid*10/2) - 150
-// camera.position.z = grid*10 
-const helper = new THREE.CameraHelper( camera );
-scene.add( helper );
+camera.position.x = grid*10/2
+camera.position.y = -grid*10
+camera.position.z = grid*10
+
+// camera.position.x = 0
+// camera.position.y = 0
+// camera.position.z = 40
+
+// const helper = new THREE.CameraHelper( camera );
+// scene.add( helper );
 
 const axesHelper = new THREE.AxesHelper( 250 );
 scene.add( axesHelper );
@@ -31,26 +37,40 @@ directionalLight.position.y = grid*10
 directionalLight.position.z = 200
 scene.add( directionalLight );
 
-camera.position.x = grid*10/2
-camera.position.y = -grid*10/2
-camera.position.z = grid*10
-
-
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-// let planeMaterial = new THREE.MeshBasicMaterial({color: "brown"})
-// let planeGeometry = new THREE.BoxGeometry( 10*grid, 10*grid, 1 )
+// const geometry = new THREE.PlaneGeometry( 1, 1 );
+// const material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+// const plane2 = new THREE.Mesh( geometry, material );
+// scene.add( plane2 );
+
+
+let planeMaterial = new THREE.MeshPhongMaterial({color: "brown"})
+let planeGeometry = new THREE.BoxGeometry( 12*grid, 12*grid, 5 )
+let plane = new THREE.Mesh( planeGeometry, planeMaterial )
+plane.position.x = grid*10/2-5
+plane.position.y = -grid*10/2+5
+plane.position.z = 0
+
+// let planeMaterial = new THREE.MeshPhongMaterial({ color: "red"})
+// let planeGeometry = new THREE.BoxGeometry( 10, 10, 3 )
 // let plane = new THREE.Mesh( planeGeometry, planeMaterial )
-// plane.position.x = grid*10/2-5
-// plane.position.y = -grid*10/2+5
-// plane.position.z = 0
-// scene.add(plane)
+scene.add(plane)
 // for (let i = 0; i< arrayOfPlanes.length; i++) {
 //     // console.log(mainGrid[i])
 //     scene.add( arrayOfPlanes[i] )
 // }
+
+// scene.add( playGround() )
+
+
+const changeCamera = () => {
+    console.log("CAMERA CHANGED")
+}
+
+
 let angle = 0
 function animate() {
 
@@ -140,12 +160,11 @@ const loop = async () => {
         checkNeighbors(mainGrid[cell.column + cell.row * grid])
         count++
 
-        await new Promise(resolve => setTimeout(resolve, 10))
+        await new Promise(resolve => setTimeout(resolve, 1))
     }
 }
 
 await loop()
-
 
 
 // scene.children[4].material.color.b = 255
