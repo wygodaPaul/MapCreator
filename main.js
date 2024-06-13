@@ -7,16 +7,47 @@ import { draw } from "./functions/draw.js"
 import { findCellWithLowestEntropy } from './functions/findLowestEntropy.js';
 import { tiles } from './tiles.js';
 import { playGround } from './functions/playGround.js';
+// import { changeCamera } from './functions/camera.js'
 
-const grid = 10
+const grid = 60
 let { mainGrid, arrayOfPlanes } = gridCreator(grid)
 
 const scene = new THREE.Scene();
 // Camera Options
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 camera.position.x = grid*10/2
 camera.position.y = -grid*10
 camera.position.z = grid*10
+camera.lookAt( grid*10/2, -grid*10/2, 0 )
+let angle = 0
+
+window.rotateCameraLeft = () => {
+    camera.position.x = 0
+    camera.position.y = -grid*10/2
+    camera.lookAt( grid*10/2, -grid*10/2, 0 )
+    camera.rotation.z -= 90 / (180/Math.PI)
+}
+
+window.rotateCameraRight = () => {
+    camera.position.x = grid*10
+    camera.position.y = -grid*10/2
+    camera.lookAt( grid*10/2, -grid*10/2, 0 )
+    camera.rotation.z += 90 / (180/Math.PI)
+}
+
+window.cameraStop = () => {
+    camera.position.x = grid*10/2
+    camera.position.y = 0
+    camera.lookAt( grid*10/2, -grid*10/2, 0 )
+    camera.rotation.z += 180 / (180/Math.PI)
+}
+
+window.cameraBottom = () => {
+    camera.position.x = grid*10/2
+    camera.position.y = -grid*10
+    camera.lookAt( grid*10/2, -grid*10/2, 0 )
+    camera.rotation.z += 0 / (180/Math.PI)
+}
 
 // camera.position.x = 0
 // camera.position.y = 0
@@ -66,20 +97,19 @@ scene.add(plane)
 // scene.add( playGround() )
 
 
-const changeCamera = () => {
-    console.log("CAMERA CHANGED")
-}
 
 
-let angle = 0
 function animate() {
 
 	requestAnimationFrame( animate );
-    angle += 0.005; 
-    // camera.position.x = grid*10/2 + Math.sin( angle ) * -200
-    // camera.position.y = -grid*10/2 - Math.cos( angle ) * 200
+    // angle += 0.0035
+    // camera.position.y += Math.sin( angle ) 
+    // camera.position.x -= Math.cos( angle ) 
+
+    // camera.position.x = grid*10/2 + Math.sin( angle ) 
+    // camera.position.y = -grid*10/2 - Math.cos( angle ) 
     // camera.position.z = grid*10 
-    camera.lookAt( grid*10/2, -grid*10/2, 0 )
+    // camera.lookAt( grid*10/2, -grid*10/2, 0 )
 
 	renderer.render( scene, camera );
 }
@@ -166,6 +196,6 @@ const loop = async () => {
 
 await loop()
 
-
 // scene.children[4].material.color.b = 255
 // console.log(scene.children[4].material.color.b)
+

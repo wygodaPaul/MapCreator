@@ -7,14 +7,18 @@
         <!-- <link src="main.js" type="module"> -->
 	</head>
 	<body>
+		<script type="module" src="./main.js"></script>
+
 		<div>
-			<button onclick="changeCamera()">Kamera A</button>
+			<button id="rotate_camera_Left" onclick="rotateCameraLeft()">90</button>
+			<button id="stop_camera" onclick="cameraStop()">180</button>
+			<button id="rotate_camera_Right" onclick="rotateCameraRight()">270</button>
+			<button id="rotate_camera_Bottom" onclick="cameraBottom()">360</button>
+
+
 		</div>
-		<script type="module" src="/main.js"></script>
-		<script>
-			const changeCamera = () => {
-				console.log("Change MEEEE")
-			}
-		</script>
+		<!-- <script type="module">
+			import { changeCamera } from "./functions/camera.js"
+		</script> -->
 	</body>
 </html>
