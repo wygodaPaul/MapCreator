@@ -9,7 +9,7 @@ import { tiles } from './tiles.js';
 import { playGround } from './functions/playGround.js';
 // import { changeCamera } from './functions/camera.js'
 
-const grid = 60
+const grid = 30
 let { mainGrid, arrayOfPlanes } = gridCreator(grid)
 
 const scene = new THREE.Scene();
@@ -48,6 +48,11 @@ window.cameraBottom = () => {
     camera.lookAt( grid*10/2, -grid*10/2, 0 )
     camera.rotation.z += 0 / (180/Math.PI)
 }
+
+window.createCamera = () => {
+    
+}
+
 
 // camera.position.x = 0
 // camera.position.y = 0
