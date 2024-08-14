@@ -9,8 +9,15 @@ import { tiles } from './tiles.js';
 import { playGround } from './functions/playGround.js';
 // import { changeCamera } from './functions/camera.js'
 
-const grid = 30
+const grid = 10
 let { mainGrid, arrayOfPlanes } = gridCreator(grid)
+let mapReady = false
+let playerExists = false
+// let player = {
+//     positionX: 10*(Math.floor(grid/2)),
+//     positionY: -10*(Math.floor(grid/2)),
+//     positionZ: 5
+// }
 
 const scene = new THREE.Scene();
 // Camera Options
@@ -49,8 +56,43 @@ window.cameraBottom = () => {
     camera.rotation.z += 0 / (180/Math.PI)
 }
 
-window.createCamera = () => {
+// Player creation and movement
+
+window.createPlayer = () => {
+    if (mapReady && !playerExists) {
+        let planeMaterial = new THREE.MeshPhongMaterial({ color: "pink" })
+        let planeGeometry = new THREE.BoxGeometry( 5, 5, 30 )
+        let player = new THREE.Mesh( planeGeometry, planeMaterial )
+        player.name = "player"
+        player.position.x = 10*(Math.floor(grid/2))
+        player.position.y = -10*(Math.floor(grid/2))
+        player.position.z = 5
     
+        playerExists = true
+        console.log('player - ', player)
+        scene.add(player)
+    }
+
+}
+
+window.playerLeft = () => {
+    scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.x -= 10
+    console.log('LEFT')
+}
+
+window.playerUp = () => {
+    scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.y += 10
+    console.log('UP', scene)
+}
+
+window.playerRight = () => {
+    scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.x += 10
+    console.log('RIGHT')
+}
+
+window.playerDown = () => {
+    scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.y -= 10
+    console.log('DOWN')
 }
 
 
@@ -197,6 +239,8 @@ const loop = async () => {
 
         await new Promise(resolve => setTimeout(resolve, 1))
     }
+    mapReady = true
+    
 }
 
 await loop()
