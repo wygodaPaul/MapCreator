@@ -9,7 +9,7 @@ import { tiles } from './tiles.js';
 import { playGround } from './functions/playGround.js';
 // import { changeCamera } from './functions/camera.js'
 
-const grid = 10
+const grid = 50
 let { mainGrid, arrayOfPlanes } = gridCreator(grid)
 let mapReady = false
 let playerExists = false
@@ -60,6 +60,7 @@ window.cameraBottom = () => {
 
 window.createPlayer = () => {
     if (mapReady && !playerExists) {
+        console.log('Main Grid - ', mainGrid)
         let planeMaterial = new THREE.MeshPhongMaterial({ color: "pink" })
         let planeGeometry = new THREE.BoxGeometry( 5, 5, 30 )
         let player = new THREE.Mesh( planeGeometry, planeMaterial )
@@ -75,23 +76,39 @@ window.createPlayer = () => {
 
 }
 
-window.playerLeft = () => {
-    scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.x -= 10
+window.playerLeft = async () => {
+    for (let i = 0; i<10; i++) {
+        scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.x -= 1
+        await new Promise(resolve => setTimeout(resolve, 10))
+    }
+    
     console.log('LEFT')
 }
 
-window.playerUp = () => {
-    scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.y += 10
-    console.log('UP', scene)
+window.playerUp = async () => {
+    for (let i = 0; i<10; i++) {
+        scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.y += 1
+        await new Promise(resolve => setTimeout(resolve, 10))
+    }
+    
+    console.log('UP')
 }
 
-window.playerRight = () => {
-    scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.x += 10
+window.playerRight = async () => {
+    for (let i = 0; i<10; i++) {
+        scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.x += 1
+        await new Promise(resolve => setTimeout(resolve, 10))
+    }
+    
     console.log('RIGHT')
 }
 
-window.playerDown = () => {
-    scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.y -= 10
+window.playerDown = async () => {
+    for (let i = 0; i<10; i++) {
+        scene.children[scene.children.findIndex(kid => kid.name === 'player')].position.y -= 1
+        await new Promise(resolve => setTimeout(resolve, 10))
+    }
+    
     console.log('DOWN')
 }
 
