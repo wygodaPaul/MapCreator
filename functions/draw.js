@@ -4,8 +4,6 @@ import { getRandomNumber } from './getRandomNumber';
 
 
 export const draw = (cell) => {
-
-
     const geometry = new THREE.CylinderGeometry( 7, getRandomNumber(7) + 7, 2, 8 ); 
     const material = new THREE.MeshPhongMaterial( { color: tiles[cell.option[0]].COLOR } ); 
     const plane = new THREE.Mesh( geometry, material )
@@ -13,6 +11,7 @@ export const draw = (cell) => {
     plane.position.y = -10 * cell.row
     plane.position.z = 2 * tiles[cell.option[0]].HEIGHT
     plane.rotation.x = 90 / (180/Math.PI)
+    plane.receiveShadow = true;
 
     // let planeMaterial = new THREE.MeshPhongMaterial({ color: tiles[cell.option[0]].COLOR })
     // let planeGeometry = new THREE.BoxGeometry( 10, 10, 3 )
@@ -20,6 +19,6 @@ export const draw = (cell) => {
     // plane.position.x = 10 * cell.column
     // plane.position.y = -10 * cell.row
     // plane.position.z = 2 * tiles[cell.option[0]].HEIGHT
-
+    
     return plane
 }

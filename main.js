@@ -9,7 +9,7 @@ import { tiles } from './tiles.js';
 import { playGround } from './functions/playGround.js';
 // import { changeCamera } from './functions/camera.js'
 
-const grid = 50
+const grid = 60
 let { mainGrid, arrayOfPlanes } = gridCreator(grid)
 let mapReady = false
 let playerExists = false
@@ -126,10 +126,11 @@ scene.add( axesHelper );
 const ambientLight = new THREE.AmbientLight(0x606060);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight( 0xffffff );
+const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
 directionalLight.position.x = -grid*10
 directionalLight.position.y = grid*10
 directionalLight.position.z = 200
+directionalLight.castShadow = true
 scene.add( directionalLight );
 
 const renderer = new THREE.WebGLRenderer();

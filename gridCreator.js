@@ -24,8 +24,6 @@ for (let i = 0; i < grid; i++) {
     }
 }
 
-
-// console.log(arrayOfPlanes)
 return { mainGrid, arrayOfPlanes } 
 }
 

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { tiles } from '../tiles';
 
 
-export const playGround = () => {
+export const playGround = (cell) => {
     // let planeMaterial = new THREE.MeshPhongMaterial({ color: "yellow"})
     // let planeGeometry = new THREE.BoxGeometry( 10, 10, 3 )
     // let plane = new THREE.Mesh( planeGeometry, planeMaterial )
