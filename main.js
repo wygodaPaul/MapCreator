@@ -13,11 +13,6 @@ const grid = 60
 let { mainGrid, arrayOfPlanes } = gridCreator(grid)
 let mapReady = false
 let playerExists = false
-// let player = {
-//     positionX: 10*(Math.floor(grid/2)),
-//     positionY: -10*(Math.floor(grid/2)),
-//     positionZ: 5
-// }
 
 const scene = new THREE.Scene();
 // Camera Options
@@ -112,14 +107,6 @@ window.playerDown = async () => {
     console.log('DOWN')
 }
 
-
-// camera.position.x = 0
-// camera.position.y = 0
-// camera.position.z = 40
-
-// const helper = new THREE.CameraHelper( camera );
-// scene.add( helper );
-
 const axesHelper = new THREE.AxesHelper( 250 );
 scene.add( axesHelper );
 
@@ -137,12 +124,6 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-// const geometry = new THREE.PlaneGeometry( 1, 1 );
-// const material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-// const plane2 = new THREE.Mesh( geometry, material );
-// scene.add( plane2 );
-
-
 let planeMaterial = new THREE.MeshPhongMaterial({color: "brown"})
 let planeGeometry = new THREE.BoxGeometry( 12*grid, 12*grid, 5 )
 let plane = new THREE.Mesh( planeGeometry, planeMaterial )
@@ -150,32 +131,11 @@ plane.position.x = grid*10/2-5
 plane.position.y = -grid*10/2+5
 plane.position.z = 0
 
-// let planeMaterial = new THREE.MeshPhongMaterial({ color: "red"})
-// let planeGeometry = new THREE.BoxGeometry( 10, 10, 3 )
-// let plane = new THREE.Mesh( planeGeometry, planeMaterial )
 scene.add(plane)
-// for (let i = 0; i< arrayOfPlanes.length; i++) {
-//     // console.log(mainGrid[i])
-//     scene.add( arrayOfPlanes[i] )
-// }
-
-// scene.add( playGround() )
-
-
-
 
 function animate() {
 
 	requestAnimationFrame( animate );
-    // angle += 0.0035
-    // camera.position.y += Math.sin( angle ) 
-    // camera.position.x -= Math.cos( angle ) 
-
-    // camera.position.x = grid*10/2 + Math.sin( angle ) 
-    // camera.position.y = -grid*10/2 - Math.cos( angle ) 
-    // camera.position.z = grid*10 
-    // camera.lookAt( grid*10/2, -grid*10/2, 0 )
-
 	renderer.render( scene, camera );
 }
 
@@ -247,9 +207,7 @@ const loop = async () => {
 		if (test.length === 0) break
 
         const cell = findCellWithLowestEntropy(mainGrid)
-        // console.log('picked - ', cell)
         mainGrid[cell.column + cell.row * grid].option = [getRandomOption(cell.option)]
-        // console.log('test - ', mainGrid)
         mainGrid[cell.column + cell.row * grid].isCollapsed = true
         scene.add( draw(mainGrid[cell.column + cell.row * grid]) )
         checkNeighbors(mainGrid[cell.column + cell.row * grid])
@@ -262,7 +220,3 @@ const loop = async () => {
 }
 
 await loop()
-
-// scene.children[4].material.color.b = 255
-// console.log(scene.children[4].material.color.b)
-
