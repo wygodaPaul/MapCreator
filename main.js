@@ -6,10 +6,8 @@ import { getRandomOption } from './functions/getRandomOption.js';
 import { draw } from "./functions/draw.js"
 import { findCellWithLowestEntropy } from './functions/findLowestEntropy.js';
 import { tiles } from './tiles.js';
-import { playGround } from './functions/playGround.js';
-// import { changeCamera } from './functions/camera.js'
 
-const grid = 60
+const grid = 25
 let { mainGrid, arrayOfPlanes } = gridCreator(grid)
 let mapReady = false
 let playerExists = false
@@ -21,7 +19,23 @@ camera.position.x = grid*10/2
 camera.position.y = -grid*10
 camera.position.z = grid*10
 camera.lookAt( grid*10/2, -grid*10/2, 0 )
-let angle = 0
+
+const axesHelper = new THREE.AxesHelper( 250 );
+scene.add( axesHelper );
+
+const ambientLight = new THREE.AmbientLight(0x606060);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+directionalLight.position.x = -grid*10
+directionalLight.position.y = grid*10
+directionalLight.position.z = 200
+directionalLight.castShadow = true
+scene.add( directionalLight );
+
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
 
 window.rotateCameraLeft = () => {
     camera.position.x = 0
@@ -52,10 +66,8 @@ window.cameraBottom = () => {
 }
 
 // Player creation and movement
-
 window.createPlayer = () => {
     if (mapReady && !playerExists) {
-        console.log('Main Grid - ', mainGrid)
         let planeMaterial = new THREE.MeshPhongMaterial({ color: "pink" })
         let planeGeometry = new THREE.BoxGeometry( 5, 5, 30 )
         let player = new THREE.Mesh( planeGeometry, planeMaterial )
@@ -65,10 +77,8 @@ window.createPlayer = () => {
         player.position.z = 5
     
         playerExists = true
-        console.log('player - ', player)
         scene.add(player)
     }
-
 }
 
 window.playerLeft = async () => {
@@ -106,23 +116,6 @@ window.playerDown = async () => {
     
     console.log('DOWN')
 }
-
-const axesHelper = new THREE.AxesHelper( 250 );
-scene.add( axesHelper );
-
-const ambientLight = new THREE.AmbientLight(0x606060);
-scene.add(ambientLight);
-
-const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
-directionalLight.position.x = -grid*10
-directionalLight.position.y = grid*10
-directionalLight.position.z = 200
-directionalLight.castShadow = true
-scene.add( directionalLight );
-
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
 
 let planeMaterial = new THREE.MeshPhongMaterial({color: "brown"})
 let planeGeometry = new THREE.BoxGeometry( 12*grid, 12*grid, 5 )
@@ -216,7 +209,7 @@ const loop = async () => {
         await new Promise(resolve => setTimeout(resolve, 1))
     }
     mapReady = true
-    
 }
 
 await loop()
+
